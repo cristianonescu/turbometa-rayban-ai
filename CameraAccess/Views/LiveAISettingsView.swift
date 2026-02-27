@@ -1,6 +1,6 @@
 /*
  * Live AI Settings View
- * 实时对话设置 - 模式选择、自定义提示词、翻译目标语言
+ * Real-time conversation settings - mode selection, custom prompts, translation target language
  */
 
 import SwiftUI
@@ -12,7 +12,7 @@ struct LiveAISettingsView: View {
     var body: some View {
         NavigationView {
             List {
-                // 对话模式选择
+                // Conversation mode selection
                 Section {
                     ForEach(LiveAIMode.allCases) { mode in
                         Button {
@@ -41,12 +41,12 @@ struct LiveAISettingsView: View {
                         }
                     }
                 } header: {
-                    Text("liveai.settings.mode".localized)
+                    Text("liveai.settings.mode".localized) // "Conversation Mode"
                 } footer: {
-                    Text("liveai.settings.mode.footer".localized)
+                    Text("liveai.settings.mode.footer".localized) // "Select conversation mode..."
                 }
 
-                // 翻译目标语言（仅在翻译模式显示）
+                // Translation target language (only shown in translation mode)
                 if modeManager.currentMode == .translate {
                     Section {
                         ForEach(LiveAIModeManager.supportedLanguages, id: \.code) { language in
@@ -65,28 +65,28 @@ struct LiveAISettingsView: View {
                             }
                         }
                     } header: {
-                        Text("liveai.settings.targetlanguage".localized)
+                        Text("liveai.settings.targetlanguage".localized) // "Target Language"
                     }
                 }
 
-                // 自定义提示词（仅在自定义模式显示）
+                // Custom prompt (only shown in custom mode)
                 if modeManager.currentMode == .custom {
                     Section {
                         TextEditor(text: $modeManager.customPrompt)
                             .frame(minHeight: 150)
                             .font(.body)
                     } header: {
-                        Text("liveai.settings.customprompt".localized)
+                        Text("liveai.settings.customprompt".localized) // "Custom Prompt"
                     } footer: {
-                        Text("liveai.settings.customprompt.footer".localized)
+                        Text("liveai.settings.customprompt.footer".localized) // "Enter custom system prompt..."
                     }
                 }
             }
-            .navigationTitle("liveai.settings".localized)
+            .navigationTitle("liveai.settings".localized) // "Live AI Settings"
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button("done".localized) {
+                    Button("done".localized) { // "Done"
                         dismiss()
                     }
                 }

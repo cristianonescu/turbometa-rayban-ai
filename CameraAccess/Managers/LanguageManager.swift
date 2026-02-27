@@ -8,13 +8,13 @@ import SwiftUI
 
 enum AppLanguage: String, CaseIterable {
     case system = "system"
-    case chinese = "zh-Hans"
+    case romanian = "ro-RO"
     case english = "en"
 
     var displayName: String {
         switch self {
-        case .system: return "跟随系统 / System"
-        case .chinese: return "中文"
+        case .system: return "System"
+        case .romanian: return "Romanian"
         case .english: return "English"
         }
     }
@@ -22,7 +22,7 @@ enum AppLanguage: String, CaseIterable {
     var locale: Locale {
         switch self {
         case .system: return Locale.current
-        case .chinese: return Locale(identifier: "zh-Hans")
+        case .romanian: return Locale(identifier: "ro-RO")
         case .english: return Locale(identifier: "en")
         }
     }
@@ -56,15 +56,15 @@ class LanguageManager: ObservableObject {
 
         switch currentLanguage {
         case .system:
-            // Use system language, prefer Chinese if available
+            // Use system language, prefer Romanian if available
             let preferredLanguage = Locale.preferredLanguages.first ?? "en"
-            if preferredLanguage.hasPrefix("zh") {
-                languageCode = "zh-Hans"
+            if preferredLanguage.hasPrefix("ro") {
+                languageCode = "ro-RO"
             } else {
                 languageCode = "en"
             }
-        case .chinese:
-            languageCode = "zh-Hans"
+        case .romanian:
+            languageCode = "ro-RO"
         case .english:
             languageCode = "en"
         }
@@ -88,50 +88,50 @@ class LanguageManager: ObservableObject {
         return String(format: format, arguments: args)
     }
 
-    /// Check if current language is Chinese
-    var isChinese: Bool {
+    /// Check if current language is Romanian
+    var isRomanian: Bool {
         switch currentLanguage {
-        case .chinese:
+        case .romanian:
             return true
         case .english:
             return false
         case .system:
             let preferredLanguage = Locale.preferredLanguages.first ?? "en"
-            return preferredLanguage.hasPrefix("zh")
+            return preferredLanguage.hasPrefix("ro")
         }
     }
 
     /// Get language code for API calls (TTS, etc.)
     var apiLanguageCode: String {
-        return isChinese ? "Chinese" : "English"
+        return isRomanian ? "Romanian" : "English"
     }
 
     /// Get TTS voice based on current language
     var ttsVoice: String {
-        return isChinese ? "Cherry" : "Ethan"
+        return isRomanian ? "Cherry" : "Ethan"
     }
 
     // Static helpers for nonisolated access
-    nonisolated static var staticIsChinese: Bool {
+    nonisolated static var staticIsRomanian: Bool {
         let savedLanguage = UserDefaults.standard.string(forKey: "app_language") ?? "system"
         let language = AppLanguage(rawValue: savedLanguage) ?? .system
         switch language {
-        case .chinese:
+        case .romanian:
             return true
         case .english:
             return false
         case .system:
             let preferredLanguage = Locale.preferredLanguages.first ?? "en"
-            return preferredLanguage.hasPrefix("zh")
+            return preferredLanguage.hasPrefix("ro")
         }
     }
 
     nonisolated static var staticApiLanguageCode: String {
-        return staticIsChinese ? "Chinese" : "English"
+        return staticIsRomanian ? "Romanian" : "English"
     }
 
     nonisolated static var staticTtsVoice: String {
-        return staticIsChinese ? "Cherry" : "Ethan"
+        return staticIsRomanian ? "Cherry" : "Ethan"
     }
 }
 

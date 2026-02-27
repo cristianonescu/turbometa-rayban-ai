@@ -374,7 +374,7 @@
 
 // Live Translate Languages
 "livetranslate.lang.en" = "English";
-"livetranslate.lang.zh" = "Chinese";
+"livetranslate.lang.ro" = "Romanian";
 "livetranslate.lang.ja" = "Japanese";
 "livetranslate.lang.ko" = "Korean";
 "livetranslate.lang.fr" = "French";
@@ -404,12 +404,12 @@
 
 "livetranslate.voice.cherry.desc" = "Warm female, multilingual";
 "livetranslate.voice.nofish.desc" = "Natural female, multilingual";
-"livetranslate.voice.jada.desc" = "Lively female, Chinese only";
-"livetranslate.voice.dylan.desc" = "Charming male, Chinese only";
-"livetranslate.voice.sunny.desc" = "Bright female, Chinese only";
-"livetranslate.voice.peter.desc" = "Steady male, Chinese only";
+"livetranslate.voice.jada.desc" = "Lively female, Romanian only";
+"livetranslate.voice.dylan.desc" = "Charming male, Romanian only";
+"livetranslate.voice.sunny.desc" = "Bright female, Romanian only";
+"livetranslate.voice.peter.desc" = "Steady male, Romanian only";
 "livetranslate.voice.kiki.desc" = "Cantonese female, Cantonese only";
-"livetranslate.voice.eric.desc" = "Mature male, Chinese only";
+"livetranslate.voice.eric.desc" = "Mature male, Romanian only";
 
 // Live Translate Errors
 "livetranslate.error.title" = "Translation Error";

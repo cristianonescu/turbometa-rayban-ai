@@ -1,6 +1,6 @@
 /*
  * Live Translate WebSocket Service
- * 基于 qwen3-livetranslate-flash-realtime 的实时翻译服务
+ * Real-time translation service based on qwen3-livetranslate-flash-realtime
  */
 
 import Foundation
@@ -18,7 +18,7 @@ class LiveTranslateService: NSObject {
     // Configuration
     private let apiKey: String
     private let model = "qwen3-livetranslate-flash-realtime"
-    // 根据用户设置的区域动态获取 WebSocket URL
+    // Dynamically get WebSocket URL based on user-configured region
     private var baseURL: String {
         return APIProviderManager.staticLiveAIWebsocketURL
     }
@@ -41,7 +41,7 @@ class LiveTranslateService: NSObject {
 
     // Translation settings
     private var sourceLanguage: TranslateLanguage = .en
-    private var targetLanguage: TranslateLanguage = .zh
+    private var targetLanguage: TranslateLanguage = .ro
     private var voice: TranslateVoice = .cherry
     private var audioOutputEnabled = true
 
@@ -51,8 +51,8 @@ class LiveTranslateService: NSObject {
 
     // Callbacks
     var onConnected: (() -> Void)?
-    var onTranslationText: ((String) -> Void)?    // 翻译结果文本
-    var onTranslationDelta: ((String) -> Void)?   // 增量翻译文本
+    var onTranslationText: ((String) -> Void)?    // Translation result text
+    var onTranslationDelta: ((String) -> Void)?   // Incremental translation text
     var onAudioDelta: ((Data) -> Void)?
     var onAudioDone: (() -> Void)?
     var onError: ((String) -> Void)?
@@ -63,7 +63,7 @@ class LiveTranslateService: NSObject {
 
     // Image sending
     private var lastImageSendTime: Date?
-    private let imageInterval: TimeInterval = 0.5  // 每0.5秒最多发送一张图片
+    private let imageInterval: TimeInterval = 0.5  // Maximum one image every 0.5 seconds
 
     init(apiKey: String) {
         self.apiKey = apiKey
@@ -85,7 +85,7 @@ class LiveTranslateService: NSObject {
         guard let playbackEngine = playbackEngine,
               let playerNode = playerNode,
               let playbackFormat = playbackFormat else {
-            print("❌ [Translate] 无法初始化播放引擎")
+            print("❌ [Translate] Failed to initialize playback engine")
             return
         }
 
@@ -93,7 +93,7 @@ class LiveTranslateService: NSObject {
         playbackEngine.connect(playerNode, to: playbackEngine.mainMixerNode, format: playbackFormat)
         playbackEngine.prepare()
 
-        print("✅ [Translate] 播放引擎初始化完成: Float32 @ 24kHz")
+        print("✅ [Translate] Playback engine initialized: Float32 @ 24kHz")
     }
 
     private func startPlaybackEngine() {
@@ -102,9 +102,9 @@ class LiveTranslateService: NSObject {
         do {
             try playbackEngine.start()
             isPlaybackEngineRunning = true
-            print("▶️ [Translate] 播放引擎已启动")
+            print("▶️ [Translate] Playback engine started")
         } catch {
-            print("❌ [Translate] 播放引擎启动失败: \(error)")
+            print("❌ [Translate] Playback engine start failed: \(error)")
         }
     }
 
@@ -115,17 +115,17 @@ class LiveTranslateService: NSObject {
         playerNode?.reset()
         playbackEngine.stop()
         isPlaybackEngineRunning = false
-        print("⏹️ [Translate] 播放引擎已停止")
+        print("⏹️ [Translate] Playback engine stopped")
     }
 
     // MARK: - WebSocket Connection
 
     func connect() {
         let urlString = "\(baseURL)?model=\(model)"
-        print("🔌 [Translate] 准备连接 WebSocket: \(urlString)")
+        print("🔌 [Translate] Preparing WebSocket connection: \(urlString)")
 
         guard let url = URL(string: urlString) else {
-            print("❌ [Translate] 无效的 URL")
+            print("❌ [Translate] Invalid URL")
             onError?("Invalid URL")
             return
         }
@@ -139,18 +139,18 @@ class LiveTranslateService: NSObject {
         webSocket = urlSession?.webSocketTask(with: request)
         webSocket?.resume()
 
-        print("🔌 [Translate] WebSocket 任务已启动")
+        print("🔌 [Translate] WebSocket task started")
         receiveMessage()
 
-        // 等待连接后发送配置
+        // Send configuration after connection established
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            print("⚙️ [Translate] 准备配置会话")
+            print("⚙️ [Translate] Preparing session configuration")
             self.configureSession()
         }
     }
 
     func disconnect() {
-        print("🔌 [Translate] 断开 WebSocket 连接")
+        print("🔌 [Translate] Disconnecting WebSocket")
         webSocket?.cancel(with: .goingAway, reason: nil)
         webSocket = nil
         stopRecording()
@@ -170,7 +170,7 @@ class LiveTranslateService: NSObject {
         self.voice = voice
         self.audioOutputEnabled = audioEnabled
 
-        // 如果已连接，重新配置会话
+        // If already connected, reconfigure session
         if webSocket != nil {
             configureSession()
         }
@@ -206,7 +206,7 @@ class LiveTranslateService: NSObject {
         ]
 
         sendEvent(sessionConfig)
-        print("📤 [Translate] 配置会话: \(sourceLanguage.rawValue) → \(targetLanguage.rawValue), 音色: \(voice.rawValue)")
+        print("📤 [Translate] Session configured: \(sourceLanguage.rawValue) → \(targetLanguage.rawValue), voice: \(voice.rawValue)")
     }
 
     // MARK: - Audio Recording
@@ -215,7 +215,7 @@ class LiveTranslateService: NSObject {
         guard !isRecording else { return }
 
         do {
-            print("🎤 [Translate] 开始录音, 使用\(usePhoneMic ? "iPhone" : "蓝牙")麦克风")
+            print("🎤 [Translate] Starting recording, using \(usePhoneMic ? "iPhone" : "Bluetooth") microphone")
 
             if let engine = audioEngine, engine.isRunning {
                 engine.stop()
@@ -225,39 +225,39 @@ class LiveTranslateService: NSObject {
             let audioSession = AVAudioSession.sharedInstance()
 
             if usePhoneMic {
-                // 使用 iPhone 麦克风 - 适合翻译对方说的话
+                // Use iPhone microphone - suitable for translating other's speech
                 try audioSession.setCategory(
                     .playAndRecord,
                     mode: .default,
-                    options: [.defaultToSpeaker]  // 不启用蓝牙，强制使用 iPhone 麦克风
+                    options: [.defaultToSpeaker]  // Disable Bluetooth, force iPhone microphone
                 )
-                print("🎙️ [Translate] 使用 iPhone 麦克风（翻译对方）")
+                print("🎙️ [Translate] Using iPhone microphone (translate other)")
             } else {
-                // 使用蓝牙麦克风（眼镜）- 适合翻译自己说的话
+                // Use Bluetooth microphone (glasses) - suitable for translating own speech
                 try audioSession.setCategory(
                     .playAndRecord,
                     mode: .default,
                     options: [.allowBluetooth, .defaultToSpeaker]
                 )
-                print("🎙️ [Translate] 使用蓝牙麦克风（翻译自己）")
+                print("🎙️ [Translate] Using Bluetooth microphone (translate self)")
             }
             try audioSession.setActive(true)
 
-            // 打印当前音频输入设备
+            // Print current audio input device
             if let inputRoute = audioSession.currentRoute.inputs.first {
-                print("🎙️ [Translate] 当前输入设备: \(inputRoute.portName) (\(inputRoute.portType.rawValue))")
+                print("🎙️ [Translate] Current input device: \(inputRoute.portName) (\(inputRoute.portType.rawValue))")
             }
 
             guard let engine = audioEngine else {
-                print("❌ [Translate] 音频引擎未初始化")
+                print("❌ [Translate] Audio engine not initialized")
                 return
             }
 
             let inputNode = engine.inputNode
             let inputFormat = inputNode.outputFormat(forBus: 0)
 
-            print("🎵 [Translate] 输入格式: \(inputFormat.sampleRate) Hz, \(inputFormat.channelCount) channels")
-            print("🎵 [Translate] 目标格式: \(targetSampleRate) Hz (将自动重采样)")
+            print("🎵 [Translate] Input format: \(inputFormat.sampleRate) Hz, \(inputFormat.channelCount) channels")
+            print("🎵 [Translate] Target format: \(targetSampleRate) Hz (will auto-resample)")
 
             inputNode.installTap(onBus: 0, bufferSize: 4096, format: inputFormat) { [weak self] buffer, time in
                 self?.processAudioBuffer(buffer)
@@ -267,10 +267,10 @@ class LiveTranslateService: NSObject {
             try engine.start()
 
             isRecording = true
-            print("✅ [Translate] 录音已启动")
+            print("✅ [Translate] Recording started")
 
         } catch {
-            print("❌ [Translate] 启动录音失败: \(error.localizedDescription)")
+            print("❌ [Translate] Failed to start recording: \(error.localizedDescription)")
             onError?("Failed to start recording: \(error.localizedDescription)")
         }
     }
@@ -278,7 +278,7 @@ class LiveTranslateService: NSObject {
     func stopRecording() {
         guard isRecording else { return }
 
-        print("🛑 [Translate] 停止录音")
+        print("🛑 [Translate] Stopping recording")
         audioEngine?.inputNode.removeTap(onBus: 0)
         audioEngine?.stop()
         isRecording = false
@@ -289,7 +289,7 @@ class LiveTranslateService: NSObject {
 
         let inputSampleRate = buffer.format.sampleRate
 
-        // 如果采样率不是 16kHz，需要重采样
+        // If sample rate is not 16kHz, need resampling
         if inputSampleRate != targetSampleRate {
             guard let resampledBuffer = resampleBuffer(buffer) else {
                 return
@@ -306,17 +306,17 @@ class LiveTranslateService: NSObject {
             return nil
         }
 
-        // 创建或更新 converter
+        // Create or update converter
         if audioConverter == nil || audioConverter?.inputFormat != inputFormat {
             audioConverter = AVAudioConverter(from: inputFormat, to: outputFormat)
         }
 
         guard let converter = audioConverter else {
-            print("❌ [Translate] 无法创建音频转换器")
+            print("❌ [Translate] Failed to create audio converter")
             return nil
         }
 
-        // 计算输出帧数
+        // Calculate output frame count
         let ratio = targetSampleRate / inputFormat.sampleRate
         let outputFrameCount = AVAudioFrameCount(Double(inputBuffer.frameLength) * ratio)
 
@@ -333,7 +333,7 @@ class LiveTranslateService: NSObject {
         converter.convert(to: outputBuffer, error: &error, withInputFrom: inputBlock)
 
         if let error = error {
-            print("❌ [Translate] 重采样失败: \(error.localizedDescription)")
+            print("❌ [Translate] Resampling failed: \(error.localizedDescription)")
             return nil
         }
 
@@ -363,7 +363,7 @@ class LiveTranslateService: NSObject {
     // MARK: - Image Sending
 
     func sendImageFrame(_ image: UIImage) {
-        // 限制发送频率：每0.5秒最多一张
+        // Rate limit: maximum one image every 0.5 seconds
         let now = Date()
         if let lastTime = lastImageSendTime, now.timeIntervalSince(lastTime) < imageInterval {
             return
@@ -371,18 +371,18 @@ class LiveTranslateService: NSObject {
         lastImageSendTime = now
 
         guard let imageData = image.jpegData(compressionQuality: 0.6) else {
-            print("❌ [Translate] 无法压缩图片")
+            print("❌ [Translate] Failed to compress image")
             return
         }
 
-        // 限制图片大小 500KB
+        // Limit image size to 500KB
         guard imageData.count <= 500 * 1024 else {
-            print("⚠️ [Translate] 图片过大，跳过发送")
+            print("⚠️ [Translate] Image too large, skipping")
             return
         }
 
         let base64Image = imageData.base64EncodedString()
-        print("📸 [Translate] 发送图片: \(imageData.count) bytes")
+        print("📸 [Translate] Sending image: \(imageData.count) bytes")
 
         let event: [String: Any] = [
             "event_id": generateEventId(),
@@ -397,14 +397,14 @@ class LiveTranslateService: NSObject {
     private func sendEvent(_ event: [String: Any]) {
         guard let jsonData = try? JSONSerialization.data(withJSONObject: event),
               let jsonString = String(data: jsonData, encoding: .utf8) else {
-            print("❌ [Translate] 无法序列化事件")
+            print("❌ [Translate] Failed to serialize event")
             return
         }
 
         let message = URLSessionWebSocketTask.Message.string(jsonString)
         webSocket?.send(message) { error in
             if let error = error {
-                print("❌ [Translate] 发送事件失败: \(error.localizedDescription)")
+                print("❌ [Translate] Failed to send event: \(error.localizedDescription)")
                 self.onError?("Send error: \(error.localizedDescription)")
             }
         }
@@ -415,7 +415,7 @@ class LiveTranslateService: NSObject {
     private func sendAudioAppend(_ base64Audio: String) {
         audioSendCount += 1
         if audioSendCount == 1 || audioSendCount % 50 == 0 {
-            print("🎵 [Translate] 发送音频块 #\(audioSendCount), 大小: \(base64Audio.count) bytes")
+            print("🎵 [Translate] Sending audio chunk #\(audioSendCount), size: \(base64Audio.count) bytes")
         }
 
         let event: [String: Any] = [
@@ -436,7 +436,7 @@ class LiveTranslateService: NSObject {
                 self?.receiveMessage()
 
             case .failure(let error):
-                print("❌ [Translate] 接收消息失败: \(error.localizedDescription)")
+                print("❌ [Translate] Failed to receive message: \(error.localizedDescription)")
                 self?.onError?("Receive error: \(error.localizedDescription)")
             }
         }
@@ -459,38 +459,38 @@ class LiveTranslateService: NSObject {
         guard let data = jsonString.data(using: .utf8),
               let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
               let type = json["type"] as? String else {
-            print("⚠️ [Translate] 收到无法解析的消息: \(jsonString.prefix(200))")
+            print("⚠️ [Translate] Received unparseable message: \(jsonString.prefix(200))")
             return
         }
 
-        // 打印所有收到的事件类型
-        print("📥 [Translate] 收到事件: \(type)")
+        // Print all received event types
+        print("📥 [Translate] Received event: \(type)")
 
         DispatchQueue.main.async {
             switch type {
             case TranslateServerEvent.sessionCreated.rawValue,
                  TranslateServerEvent.sessionUpdated.rawValue:
-                print("✅ [Translate] 会话已建立")
+                print("✅ [Translate] Session established")
                 self.onConnected?()
 
             case TranslateServerEvent.responseAudioTranscriptText.rawValue:
-                // 增量翻译文本
+                // Incremental translation text
                 if let delta = json["delta"] as? String {
-                    print("💬 [Translate] 翻译片段: \(delta)")
+                    print("💬 [Translate] Translation segment: \(delta)")
                     self.onTranslationDelta?(delta)
                 }
 
             case TranslateServerEvent.responseAudioTranscriptDone.rawValue:
-                // 翻译文本完成（输出音频+文本模式）
+                // Translation text complete (audio+text mode)
                 if let text = json["text"] as? String {
-                    print("✅ [Translate] 翻译完成: \(text)")
+                    print("✅ [Translate] Translation complete: \(text)")
                     self.onTranslationText?(text)
                 }
 
             case TranslateServerEvent.responseTextDone.rawValue:
-                // 翻译文本完成（仅文本模式）
+                // Translation text complete (text-only mode)
                 if let text = json["text"] as? String {
-                    print("✅ [Translate] 翻译完成(文本): \(text)")
+                    print("✅ [Translate] Translation complete (text): \(text)")
                     self.onTranslationText?(text)
                 }
 
@@ -514,7 +514,7 @@ class LiveTranslateService: NSObject {
             case TranslateServerEvent.error.rawValue:
                 if let error = json["error"] as? [String: Any],
                    let message = error["message"] as? String {
-                    print("❌ [Translate] 服务器错误: \(message)")
+                    print("❌ [Translate] Server error: \(message)")
                     self.onError?(message)
                 }
 
@@ -604,11 +604,11 @@ class LiveTranslateService: NSObject {
 
 extension LiveTranslateService: URLSessionWebSocketDelegate {
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol protocol: String?) {
-        print("✅ [Translate] WebSocket 连接已建立")
+        print("✅ [Translate] WebSocket connection established")
     }
 
     func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didCloseWith closeCode: URLSessionWebSocketTask.CloseCode, reason: Data?) {
         let reasonString = reason.flatMap { String(data: $0, encoding: .utf8) } ?? "unknown"
-        print("🔌 [Translate] WebSocket 已断开, closeCode: \(closeCode.rawValue), reason: \(reasonString)")
+        print("🔌 [Translate] WebSocket disconnected, closeCode: \(closeCode.rawValue), reason: \(reasonString)")
     }
 }

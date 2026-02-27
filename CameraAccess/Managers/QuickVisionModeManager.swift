@@ -35,7 +35,7 @@ class QuickVisionModeManager: ObservableObject {
 
     // 支持的翻译目标语言
     static let supportedLanguages: [(code: String, name: String)] = [
-        ("zh-CN", "中文"),
+        ("ro-RO", "Romanian"),
         ("en-US", "English"),
         ("ja-JP", "日本語"),
         ("ko-KR", "한국어"),

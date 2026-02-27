@@ -9,13 +9,13 @@ import UIKit
 // MARK: - Quick Vision Mode
 
 enum QuickVisionMode: String, CaseIterable, Codable, Identifiable {
-    case standard = "standard"      // 默认模式
-    case health = "health"          // 健康识图
-    case blind = "blind"            // 盲人模式
-    case reading = "reading"        // 阅读模式
-    case translate = "translate"    // 翻译模式
-    case encyclopedia = "encyclopedia" // 百科（博物馆）模式
-    case custom = "custom"          // 自定义提示词
+    case standard = "standard"      // Default mode
+    case health = "health"          // Health analysis mode
+    case blind = "blind"            // Blind mode
+    case reading = "reading"        // Reading mode
+    case translate = "translate"    // Translation mode
+    case encyclopedia = "encyclopedia" // Encyclopedia (museum) mode
+    case custom = "custom"          // Custom prompt
 
     var id: String { rawValue }
 

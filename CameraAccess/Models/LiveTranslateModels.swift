@@ -8,34 +8,34 @@ import Foundation
 // MARK: - 支持的语种
 
 enum TranslateLanguage: String, CaseIterable, Codable, Identifiable {
-    // 支持音频+文本输出的语种
-    case en = "en"      // 英语
-    case zh = "zh"      // 中文
-    case ja = "ja"      // 日语
-    case ko = "ko"      // 韩语
-    case fr = "fr"      // 法语
-    case de = "de"      // 德语
-    case ru = "ru"      // 俄语
-    case es = "es"      // 西班牙语
-    case pt = "pt"      // 葡萄牙语
-    case it = "it"      // 意大利语
-    case yue = "yue"    // 粤语
+    // Languages that support both audio + text output
+    case en = "en"      // English
+    case ro = "ro"      // Romanian
+    case ja = "ja"      // Japanese
+    case ko = "ko"      // Korean
+    case fr = "fr"      // French
+    case de = "de"      // German
+    case ru = "ru"      // Russian
+    case es = "es"      // Spanish
+    case pt = "pt"      // Portuguese
+    case it = "it"      // Italian
+    case yue = "yue"    // Cantonese
 
-    // 仅支持输入（作为源语言）的语种
-    case id = "id"      // 印尼语
-    case vi = "vi"      // 越南语
-    case th = "th"      // 泰语
-    case ar = "ar"      // 阿拉伯语
-    case hi = "hi"      // 印地语
-    case el = "el"      // 希腊语
-    case tr = "tr"      // 土耳其语
+    // Languages supported only as input (source language)
+    case id = "id"      // Indonesian
+    case vi = "vi"      // Vietnamese
+    case th = "th"      // Thai
+    case ar = "ar"      // Arabic
+    case hi = "hi"      // Hindi
+    case el = "el"      // Greek
+    case tr = "tr"      // Turkish
 
     var id: String { rawValue }
 
     var displayName: String {
         switch self {
         case .en: return "livetranslate.lang.en".localized
-        case .zh: return "livetranslate.lang.zh".localized
+        case .ro: return "livetranslate.lang.ro".localized
         case .ja: return "livetranslate.lang.ja".localized
         case .ko: return "livetranslate.lang.ko".localized
         case .fr: return "livetranslate.lang.fr".localized
@@ -58,7 +58,7 @@ enum TranslateLanguage: String, CaseIterable, Codable, Identifiable {
     var flag: String {
         switch self {
         case .en: return "🇺🇸"
-        case .zh: return "🇨🇳"
+        case .ro: return "🇷🇴"
         case .ja: return "🇯🇵"
         case .ko: return "🇰🇷"
         case .fr: return "🇫🇷"
@@ -81,7 +81,7 @@ enum TranslateLanguage: String, CaseIterable, Codable, Identifiable {
     /// 是否支持作为目标语言（输出音频+文本）
     var supportsAudioOutput: Bool {
         switch self {
-        case .en, .zh, .ja, .ko, .fr, .de, .ru, .es, .pt, .it, .yue:
+        case .en, .ro, .ja, .ko, .fr, .de, .ru, .es, .pt, .it, .yue:
             return true
         case .id, .vi, .th, .ar, .hi, .el, .tr:
             return false
@@ -144,10 +144,10 @@ enum TranslateVoice: String, CaseIterable, Codable, Identifiable {
         switch self {
         case .cherry, .nofish:
             // 支持多语种
-            return [.zh, .en, .fr, .de, .ru, .it, .es, .pt, .ja, .ko]
+            return [.ro, .en, .fr, .de, .ru, .it, .es, .pt, .ja, .ko]
         case .jada, .dylan, .sunny, .peter, .eric:
             // 仅支持中文
-            return [.zh]
+            return [.ro]
         case .kiki:
             // 仅支持粤语
             return [.yue]
