@@ -90,7 +90,7 @@ class QuickVisionService {
     /// - Returns: Concise description text suitable for TTS playback
     func analyzeImage(_ image: UIImage, customPrompt: String? = nil) async throws -> String {
         // Convert image to base64
-        guard let imageData = image.jpegData(compressionQuality: 0.7) else {
+        guard let imageData = image.jpegData(compressionQuality: 1.0) else {
             throw QuickVisionError.invalidImage
         }
 

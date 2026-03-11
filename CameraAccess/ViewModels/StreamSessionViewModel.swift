@@ -71,7 +71,7 @@ class StreamSessionViewModel: ObservableObject {
     self.deviceSelector = AutoDeviceSelector(wearables: wearables)
 
     // Get saved video quality setting from UserDefaults (only read at init)
-    let savedQuality = UserDefaults.standard.string(forKey: "video_quality") ?? "medium"
+    let savedQuality = UserDefaults.standard.string(forKey: "video_quality") ?? "high"
     let resolution: StreamingResolution
     switch savedQuality {
     case "low":

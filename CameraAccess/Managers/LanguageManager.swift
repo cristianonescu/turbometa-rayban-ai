@@ -96,7 +96,7 @@ class LanguageManager: ObservableObject {
         case .english:
             return false
         case .system:
-            let preferredLanguage = Locale.preferredLanguages.first ?? "en"
+            let preferredLanguage = Locale.preferredLanguages.first ?? "ro"
             return preferredLanguage.hasPrefix("ro")
         }
     }
@@ -121,7 +121,7 @@ class LanguageManager: ObservableObject {
         case .english:
             return false
         case .system:
-            let preferredLanguage = Locale.preferredLanguages.first ?? "en"
+            let preferredLanguage = Locale.preferredLanguages.first ?? "ro"
             return preferredLanguage.hasPrefix("ro")
         }
     }

@@ -55,7 +55,7 @@ class VisionRecognitionViewModel: ObservableObject {
         "What scene is depicted in the image?",
         "Please describe the content of this image in detail",
         "What objects are in this image?",
-        "Please describe this image in English",
+        "Please describe this image in Romanian",
         "What place is this?",
         "What is the person in the image doing?"
     ]

@@ -27,7 +27,7 @@ struct SettingsView: View {
     @ObservedObject var liveAIModeManager = LiveAIModeManager.shared
     @State private var selectedModel = "qwen3-omni-flash-realtime"
     @State private var selectedLanguage = "ro-RO" // Default Romanian
-    @State private var selectedQuality = UserDefaults.standard.string(forKey: "video_quality") ?? "medium"
+    @State private var selectedQuality = UserDefaults.standard.string(forKey: "video_quality") ?? "high"
     @State private var hasAPIKey = false // Changed to State variable
     @State private var hasGoogleAPIKey = false // Google API Key status
 
@@ -381,7 +381,7 @@ struct SettingsView: View {
         case "ko-KR": return "한국어"
         case "es-ES": return "Español"
         case "fr-FR": return "Français"
-        default: return "Chinese"
+        default: return "Romanian"
         }
     }
 
@@ -390,7 +390,7 @@ struct SettingsView: View {
         case "low": return "Low"
         case "medium": return "Medium"
         case "high": return "High"
-        default: return "Medium"
+        default: return "High"
         }
     }
 }

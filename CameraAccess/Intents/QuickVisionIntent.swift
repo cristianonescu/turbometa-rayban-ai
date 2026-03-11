@@ -309,6 +309,7 @@ class QuickVisionManager: ObservableObject {
         }
 
         // Announce start
+        try? await Task.sleep(for: .seconds(5))
         tts.speak("Analizez imaginea, te rog asteapta. Acest proces dureaza cateva secunde.", apiKey: apiKey)
 
         // Get prompt

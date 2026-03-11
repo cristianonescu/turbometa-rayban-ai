@@ -48,6 +48,12 @@ class QuickVisionModeManager: ObservableObject {
     ]
 
     private init() {
+        let savedLanguage = userDefaults.string(forKey: translateTargetLanguageKey)
+                ?? LanguageManager.staticApiLanguageCode
+        self.translateTargetLanguage = savedLanguage
+        
+        let targetLanguageName = Self.supportedLanguages.first { $0.code == savedLanguage }?.name ?? "Romanian"
+        
         // Load saved mode
         if let savedMode = userDefaults.string(forKey: modeKey),
            let mode = QuickVisionMode(rawValue: savedMode) {
@@ -57,7 +63,9 @@ class QuickVisionModeManager: ObservableObject {
         }
 
         // Load custom prompt
-        self.customPrompt = userDefaults.string(forKey: customPromptKey) ?? "quickvision.custom.default".localized
+        self.customPrompt = (userDefaults.string(forKey: customPromptKey)
+                ?? "quickvision.custom.default".localized)
+                .replacingOccurrences(of: "{LANGUAGE}", with: targetLanguageName)
 
         // Load translation target language (defaults to system language)
         if let savedLanguage = userDefaults.string(forKey: translateTargetLanguageKey) {
@@ -71,25 +79,27 @@ class QuickVisionModeManager: ObservableObject {
 
     /// Get the full prompt for the current mode
     func getPrompt() -> String {
+        let targetLanguageName = Self.supportedLanguages.first { $0.code == translateTargetLanguage }?.name ?? "Romanian"
         switch currentMode {
         case .custom:
-            return customPrompt
+            return customPrompt.replacingOccurrences(of: "{LANGUAGE}", with: targetLanguageName)
         case .translate:
             return getTranslatePrompt()
         default:
-            return currentMode.prompt
+            return currentMode.prompt.replacingOccurrences(of: "{LANGUAGE}", with: targetLanguageName)
         }
     }
 
     /// Get the prompt for the specified mode
     func getPrompt(for mode: QuickVisionMode) -> String {
+        let targetLanguageName = Self.supportedLanguages.first { $0.code == translateTargetLanguage }?.name ?? "Romanian"
         switch mode {
         case .custom:
-            return customPrompt
+            return customPrompt.replacingOccurrences(of: "{LANGUAGE}", with: targetLanguageName)
         case .translate:
             return getTranslatePrompt()
         default:
-            return mode.prompt
+            return mode.prompt.replacingOccurrences(of: "{LANGUAGE}", with: targetLanguageName)
         }
     }
 
