@@ -309,7 +309,7 @@ class QuickVisionManager: ObservableObject {
         }
 
         // Announce start
-        tts.speak("Recognizing now", apiKey: apiKey)
+        tts.speak("Analizez imaginea, te rog asteapta. Acest proces dureaza cateva secunde.", apiKey: apiKey)
 
         // Get prompt
         let prompt = customPrompt ?? QuickVisionModeManager.shared.getPrompt(for: mode)

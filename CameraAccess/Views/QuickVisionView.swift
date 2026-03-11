@@ -205,14 +205,17 @@ struct QuickVisionView: View {
                                 .cornerRadius(AppCornerRadius.sm)
                         }
                     }
-
-                    Text(result)
-                        .font(AppTypography.body)
-                        .foregroundColor(.white.opacity(0.9))
-                        .padding()
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .background(Color.white.opacity(0.1))
-                        .cornerRadius(AppCornerRadius.md)
+                    ScrollView(.vertical, showsIndicators: true) {
+                        Text(result)
+                            .font(AppTypography.body)
+                            .foregroundColor(.white.opacity(0.9))
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .cornerRadius(AppCornerRadius.md)
+                    }
+                    .frame(maxHeight: 200) // adjust to your layout needs
+                    .background(Color.white.opacity(0.1))
+                    .cornerRadius(AppCornerRadius.md)
                 }
             }
 
