@@ -246,19 +246,19 @@ struct FeatureCardWide: View {
                         Text(title)
                             .font(AppTypography.title2)
                             .foregroundColor(.white)
-
-                        if let badge = badge {
-                            Text(badge)
-                                .font(.caption2)
-                                .fontWeight(.semibold)
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 6)
-                                .padding(.vertical, 2)
-                                .background(Color.white.opacity(0.25))
-                                .cornerRadius(4)
-                        }
                     }
 
+                    if let badge = badge {
+                        Text(badge)
+                            .font(.caption2)
+                            .fontWeight(.semibold)
+                            .foregroundColor(.white)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Color.white.opacity(0.25))
+                            .cornerRadius(4)
+                    }
+                    
                     Text(subtitle)
                         .font(AppTypography.subheadline)
                         .foregroundColor(.white.opacity(0.8))
